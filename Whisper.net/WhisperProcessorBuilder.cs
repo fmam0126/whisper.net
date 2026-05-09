@@ -89,6 +89,60 @@ public class WhisperProcessorBuilder
         whisperProcessorOptions.Translate = true;
         return this;
     }
+    /// <summary>
+    /// Configures the processor to use VAD (Voice Activity Detection) with the specified VAD model.
+    /// </summary>
+    /// <param name="vadModelPath">Path to the VAD model file.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentException">Thrown when the VAD model path is null or empty.</exception>
+
+    public WhisperProcessorBuilder WithVad(string vadModelPath)
+    {
+        if (string.IsNullOrWhiteSpace(vadModelPath))
+        {
+            throw new ArgumentException("VAD model path must not be null or empty.", nameof(vadModelPath));
+        }
+
+        whisperProcessorOptions.Vad = true;
+        whisperProcessorOptions.VadModelPath = vadModelPath;
+        return this;
+    }
+    public WhisperProcessorBuilder WithVadThreshold(float vadThreshold)
+    {
+        whisperProcessorOptions.VadThreshold = vadThreshold;
+        return this;
+    }
+    public WhisperProcessorBuilder WithVadMinSpeechDurationMs(int vadMinSpeechDurationMs)
+    {
+        whisperProcessorOptions.VadMinSpeechDurationMs = vadMinSpeechDurationMs;
+        return this;
+    }
+    public WhisperProcessorBuilder WithVadMinSilenceDurationMs(int vadMinSilenceDurationMs)
+    {
+        whisperProcessorOptions.VadMinSilenceDurationMs = vadMinSilenceDurationMs;
+        return this;
+    }
+    public WhisperProcessorBuilder WithVadMaxSpeechDurationS(float vadMaxSpeechDurationS)
+    {
+        whisperProcessorOptions.VadMaxSpeechDurationS = vadMaxSpeechDurationS;
+        return this;
+    }
+    public WhisperProcessorBuilder WithVadSpeechPadMs(int vadSpeechPadMs)
+    {
+        whisperProcessorOptions.VadSpeechPadMs = vadSpeechPadMs;
+        return this;
+    }
+    public WhisperProcessorBuilder WithVadSamplesOverlap(float vadSamplesOverlap)
+    {
+        whisperProcessorOptions.VadSamplesOverlap = vadSamplesOverlap;
+        return this;
+    }
+    // public WhisperProcessorBuilder WithVadUseGpu(bool vadUseGpu = true)
+    // {
+    //     whisperProcessorOptions.UseGpu = vadUseGpu;
+    //     return this;
+    // }
+
 
     /// <summary>
     /// Configures the processor to not use past transformation (if any) as the initial prompt for a newer processing.

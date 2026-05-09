@@ -56,9 +56,9 @@ internal struct WhisperVadParams
 
     public float MaxSpeechDurationS;
 
-    public int SpeechPaddingMs;
+    public int SpeechPadMs;
 
-    public float SampleOverlapS;
+    public float SamplesOverlap;
 }
 
 internal enum GgmlLogLevel

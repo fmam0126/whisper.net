@@ -31,6 +31,7 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
     private IntPtr? language;
     private IntPtr? initialPromptText;
     private IntPtr? suppressRegex;
+    private IntPtr? vadModelPath;
     private bool isDisposed;
     private int segmentIndex;
     private CancellationToken? currentCancellationToken;
@@ -370,6 +371,8 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
         language = null;
         MarshalUtils.TryReleaseStringHGlobal(initialPromptText);
         initialPromptText = null;
+        MarshalUtils.TryReleaseStringHGlobal(vadModelPath);
+        vadModelPath = null;
 
         MarshalUtils.TryReleaseStringHGlobal(suppressRegex);
         suppressRegex = null;
@@ -473,6 +476,45 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
             whisperParams.DurationMs = (int)options.Duration.Value.TotalMilliseconds;
         }
 
+        if (options.Vad.HasValue)
+        {
+            whisperParams.UseVad = options.Vad.Value ? trueByte : falseByte;
+            if (options.Vad.Value)
+            {
+                if (string.IsNullOrWhiteSpace(options.VadModelPath))
+                {
+                    throw new InvalidOperationException("VAD is enabled but no VAD model path was configured. Use WithVad(\"path/to/vad-model.bin\")");
+                }
+
+                vadModelPath = MarshalUtils.GetStringHGlobalPtr(options.VadModelPath);
+                whisperParams.VadModelPath = vadModelPath.Value;
+            }
+        }
+
+        if (options.VadThreshold.HasValue)
+        {
+            whisperParams.VadParams.Threshold = options.VadThreshold.Value;
+        }
+        if (options.VadMinSpeechDurationMs.HasValue)
+        {
+            whisperParams.VadParams.MinSpeechDurationMs = options.VadMinSpeechDurationMs.Value;
+        }
+        if (options.VadMinSilenceDurationMs.HasValue)
+        {
+            whisperParams.VadParams.MinSilenceDurationMs = options.VadMinSilenceDurationMs.Value;
+        }
+        if (options.VadMaxSpeechDurationS.HasValue)
+        {
+            whisperParams.VadParams.MaxSpeechDurationS = options.VadMaxSpeechDurationS.Value;
+        }
+        if (options.VadSpeechPadMs.HasValue)
+        {
+            whisperParams.VadParams.SpeechPadMs = options.VadSpeechPadMs.Value;
+        }
+        if (options.VadSamplesOverlap.HasValue)
+        {
+            whisperParams.VadParams.SamplesOverlap = options.VadSamplesOverlap.Value;
+        }
         if (options.Translate.HasValue)
         {
             whisperParams.Translate = options.Translate.Value ? trueByte : falseByte;
@@ -783,7 +825,7 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
             var t1 = TimeSpan.FromMilliseconds(nativeWhisper.Whisper_Full_Get_Segment_T1_From_State(state, segmentIndex) * 10);
             var t0 = TimeSpan.FromMilliseconds(nativeWhisper.Whisper_Full_Get_Segment_T0_From_State(state, segmentIndex) * 10);
             var textAnsi = StringFromNativeUtf8(nativeWhisper.Whisper_Full_Get_Segment_Text_From_State(state, segmentIndex));
-
+    
             float minimumProbability = 0;
             float maximumProbability = 0;
             double sumProbability = 0;

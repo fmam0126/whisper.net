@@ -87,4 +87,12 @@ internal sealed class WhisperProcessorOptions
     public bool ComputeProbabilities { get; set; }
 
     public IStringPool? StringPool { get; set; }
+    public bool? Vad { get; set; }
+    public string? VadModelPath { get; set; }
+    public float? VadThreshold { get; set; }
+    public int? VadMinSpeechDurationMs { get; set; }
+    public int? VadMinSilenceDurationMs { get; set; }
+    public float? VadMaxSpeechDurationS { get; set; }
+    public int? VadSpeechPadMs { get; set; }
+    public float? VadSamplesOverlap { get; set; }
 }

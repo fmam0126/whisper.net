@@ -220,22 +220,44 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
 
         fixed (float* pData = samples)
         {
-            var state = GetWhisperState();
-            try
+            // When VAD is enabled, use whisper_full which handles VAD internally
+            // (whisper_full_with_state bypasses VAD entirely in whisper.cpp)
+            if (options.Vad == true)
             {
                 processingSemaphore.Wait();
                 segmentIndex = 0;
-
-                var result = nativeWhisper.Whisper_Full_With_State(currentWhisperContext, state, whisperParams, (IntPtr)pData, samples.Length);
-                if (result != 0)
+                try
                 {
-                    throw new WhisperProcessingException(result);
+                    var result = nativeWhisper.Whisper_Full(currentWhisperContext, whisperParams, (IntPtr)pData, samples.Length);
+                    if (result != 0)
+                    {
+                        throw new WhisperProcessingException(result);
+                    }
+                }
+                finally
+                {
+                    processingSemaphore.Release();
                 }
             }
-            finally
+            else
             {
-                nativeWhisper.Whisper_Free_State(state);
-                processingSemaphore.Release();
+                var state = GetWhisperState();
+                try
+                {
+                    processingSemaphore.Wait();
+                    segmentIndex = 0;
+
+                    var result = nativeWhisper.Whisper_Full_With_State(currentWhisperContext, state, whisperParams, (IntPtr)pData, samples.Length);
+                    if (result != 0)
+                    {
+                        throw new WhisperProcessingException(result);
+                    }
+                }
+                finally
+                {
+                    nativeWhisper.Whisper_Free_State(state);
+                    processingSemaphore.Release();
+                }
             }
         }
     }
@@ -397,23 +419,44 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
         {
             fixed (float* pData = samples.Span)
             {
-                processingSemaphore.Wait();
-                segmentIndex = 0;
-
-                var state = GetWhisperState();
-
-                try
+                // When VAD is enabled, use whisper_full which handles VAD internally
+                if (options.Vad == true)
                 {
-                    var result = nativeWhisper.Whisper_Full_With_State(currentWhisperContext, state, whisperParams, (IntPtr)pData, samples.Length);
-                    if (result != 0)
+                    processingSemaphore.Wait();
+                    segmentIndex = 0;
+                    try
                     {
-                        throw new WhisperProcessingException(result);
+                        var result = nativeWhisper.Whisper_Full(currentWhisperContext, whisperParams, (IntPtr)pData, samples.Length);
+                        if (result != 0)
+                        {
+                            throw new WhisperProcessingException(result);
+                        }
+                    }
+                    finally
+                    {
+                        processingSemaphore.Release();
                     }
                 }
-                finally
+                else
                 {
-                    nativeWhisper.Whisper_Free_State(state);
-                    processingSemaphore.Release();
+                    processingSemaphore.Wait();
+                    segmentIndex = 0;
+
+                    var state = GetWhisperState();
+
+                    try
+                    {
+                        var result = nativeWhisper.Whisper_Full_With_State(currentWhisperContext, state, whisperParams, (IntPtr)pData, samples.Length);
+                        if (result != 0)
+                        {
+                            throw new WhisperProcessingException(result);
+                        }
+                    }
+                    finally
+                    {
+                        nativeWhisper.Whisper_Free_State(state);
+                        processingSemaphore.Release();
+                    }
                 }
             }
         }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -825,7 +868,7 @@ public sealed class WhisperProcessor : IAsyncDisposable, IDisposable
             var t1 = TimeSpan.FromMilliseconds(nativeWhisper.Whisper_Full_Get_Segment_T1_From_State(state, segmentIndex) * 10);
             var t0 = TimeSpan.FromMilliseconds(nativeWhisper.Whisper_Full_Get_Segment_T0_From_State(state, segmentIndex) * 10);
             var textAnsi = StringFromNativeUtf8(nativeWhisper.Whisper_Full_Get_Segment_Text_From_State(state, segmentIndex));
-    
+
             float minimumProbability = 0;
             float maximumProbability = 0;
             double sumProbability = 0;

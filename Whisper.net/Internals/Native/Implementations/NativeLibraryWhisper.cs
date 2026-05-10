@@ -13,10 +13,12 @@ internal class NativeLibraryWhisper : INativeWhisper
     public NativeLibraryWhisper(IntPtr whisperLibraryHandle)
     {
         Whisper_Init_From_File_With_Params_No_State = Marshal.GetDelegateForFunctionPointer<whisper_init_from_file_with_params_no_state>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_init_from_file_with_params_no_state)));
+        Whisper_Init_From_File_With_Params = Marshal.GetDelegateForFunctionPointer<whisper_init_from_file_with_params>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_init_from_file_with_params)));
         Whisper_Init_From_Buffer_With_Params_No_State = Marshal.GetDelegateForFunctionPointer<whisper_init_from_buffer_with_params_no_state>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_init_from_buffer_with_params_no_state)));
         Whisper_Free = Marshal.GetDelegateForFunctionPointer<whisper_free>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_free)));
         Whisper_Free_Params = Marshal.GetDelegateForFunctionPointer<whisper_free_params>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_free_params)));
         Whisper_Full_Default_Params_By_Ref = Marshal.GetDelegateForFunctionPointer<whisper_full_default_params_by_ref>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_full_default_params_by_ref)));
+        Whisper_Full = Marshal.GetDelegateForFunctionPointer<whisper_full>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_full)));
         Whisper_Full_With_State = Marshal.GetDelegateForFunctionPointer<whisper_full_with_state>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_full_with_state)));
         Whisper_Full_N_Segments_From_State = Marshal.GetDelegateForFunctionPointer<whisper_full_n_segments_from_state>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_full_n_segments_from_state)));
         Whisper_Full_Get_Segment_T0_From_State = Marshal.GetDelegateForFunctionPointer<whisper_full_get_segment_t0_from_state>(NativeLibrary.GetExport(whisperLibraryHandle, nameof(whisper_full_get_segment_t0_from_state)));
@@ -43,6 +45,7 @@ internal class NativeLibraryWhisper : INativeWhisper
     }
 
     public whisper_init_from_file_with_params_no_state Whisper_Init_From_File_With_Params_No_State { get; }
+    public whisper_init_from_file_with_params Whisper_Init_From_File_With_Params { get; }
 
     public whisper_init_from_buffer_with_params_no_state Whisper_Init_From_Buffer_With_Params_No_State { get; }
 
@@ -51,6 +54,8 @@ internal class NativeLibraryWhisper : INativeWhisper
     public whisper_free_params Whisper_Free_Params { get; }
 
     public whisper_full_default_params_by_ref Whisper_Full_Default_Params_By_Ref { get; }
+
+    public whisper_full Whisper_Full { get; }
 
     public whisper_full_with_state Whisper_Full_With_State { get; }
 

@@ -14,6 +14,9 @@ internal partial class LibraryImportInternalWhisper : INativeWhisper
     private static partial IntPtr whisper_init_from_file_with_params_no_state(IntPtr path, WhisperContextParams whisperContextParams);
 
     [LibraryImport(NativeConstants.InternalLibraryName)]
+    private static partial IntPtr whisper_init_from_file_with_params(IntPtr path, WhisperContextParams whisperContextParams);
+
+    [LibraryImport(NativeConstants.InternalLibraryName)]
     private static partial IntPtr whisper_init_from_buffer_with_params_no_state(IntPtr buffer, nuint buffer_size, WhisperContextParams whisperContextParams);
 
     [LibraryImport(NativeConstants.InternalLibraryName)]
@@ -24,6 +27,9 @@ internal partial class LibraryImportInternalWhisper : INativeWhisper
 
     [LibraryImport(NativeConstants.InternalLibraryName)]
     private static partial IntPtr whisper_full_default_params_by_ref(WhisperSamplingStrategy strategy);
+
+    [LibraryImport(NativeConstants.InternalLibraryName)]
+    private static partial int whisper_full(IntPtr context, WhisperFullParams parameters, IntPtr samples, int nSamples);
 
     [LibraryImport(NativeConstants.InternalLibraryName)]
     private static partial int whisper_full_with_state(IntPtr context, IntPtr state, WhisperFullParams parameters, IntPtr samples, int nSamples);
@@ -89,6 +95,7 @@ internal partial class LibraryImportInternalWhisper : INativeWhisper
     private static partial float whisper_full_get_segment_no_speech_prob_from_state(IntPtr state, int index);
 
     public INativeWhisper.whisper_init_from_file_with_params_no_state Whisper_Init_From_File_With_Params_No_State => whisper_init_from_file_with_params_no_state;
+    public INativeWhisper.whisper_init_from_file_with_params Whisper_Init_From_File_With_Params => whisper_init_from_file_with_params;
 
     public INativeWhisper.whisper_init_from_buffer_with_params_no_state Whisper_Init_From_Buffer_With_Params_No_State => whisper_init_from_buffer_with_params_no_state;
 
@@ -97,6 +104,8 @@ internal partial class LibraryImportInternalWhisper : INativeWhisper
     public INativeWhisper.whisper_free_params Whisper_Free_Params => whisper_free_params;
 
     public INativeWhisper.whisper_full_default_params_by_ref Whisper_Full_Default_Params_By_Ref => whisper_full_default_params_by_ref;
+
+    public INativeWhisper.whisper_full Whisper_Full => whisper_full;
 
     public INativeWhisper.whisper_full_with_state Whisper_Full_With_State => whisper_full_with_state;
 

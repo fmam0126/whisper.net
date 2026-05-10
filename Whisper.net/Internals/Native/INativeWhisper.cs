@@ -11,6 +11,9 @@ internal interface INativeWhisper : IDisposable
     public delegate IntPtr whisper_init_from_file_with_params_no_state(IntPtr path, WhisperContextParams whisperContextParams);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    public delegate IntPtr whisper_init_from_file_with_params(IntPtr path, WhisperContextParams whisperContextParams);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     public delegate IntPtr whisper_init_from_buffer_with_params_no_state(IntPtr buffer, nuint buffer_size, WhisperContextParams whisperContextParams);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -21,6 +24,9 @@ internal interface INativeWhisper : IDisposable
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     public delegate IntPtr whisper_full_default_params_by_ref(WhisperSamplingStrategy strategy);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    public delegate int whisper_full(IntPtr context, WhisperFullParams parameters, IntPtr samples, int nSamples);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     public delegate int whisper_full_with_state(IntPtr context, IntPtr state, WhisperFullParams parameters, IntPtr samples, int nSamples);
@@ -86,10 +92,12 @@ internal interface INativeWhisper : IDisposable
     public delegate float whisper_full_get_segment_no_speech_prob_from_state(IntPtr state, int index);
 
     whisper_init_from_file_with_params_no_state Whisper_Init_From_File_With_Params_No_State { get; }
+    whisper_init_from_file_with_params Whisper_Init_From_File_With_Params { get; }
     whisper_init_from_buffer_with_params_no_state Whisper_Init_From_Buffer_With_Params_No_State { get; }
     whisper_free Whisper_Free { get; }
     whisper_free_params Whisper_Free_Params { get; }
     whisper_full_default_params_by_ref Whisper_Full_Default_Params_By_Ref { get; }
+    whisper_full Whisper_Full { get; }
     whisper_full_with_state Whisper_Full_With_State { get; }
     whisper_full_n_segments_from_state Whisper_Full_N_Segments_From_State { get; }
     whisper_full_get_segment_t0_from_state Whisper_Full_Get_Segment_T0_From_State { get; }

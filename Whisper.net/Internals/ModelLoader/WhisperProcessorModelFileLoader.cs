@@ -34,7 +34,7 @@ internal sealed class WhisperProcessorModelFileLoader : IWhisperProcessorModelLo
         var stackPath = (IntPtr)stackBytes;
         MarshalUtils.CopyStringToPtr(pathModel, stackPath, stackByteCount);
 
-        return nativeWhisper.Whisper_Init_From_File_With_Params_No_State(stackPath,
+        return nativeWhisper.Whisper_Init_From_File_With_Params(stackPath,
             new WhisperContextParams()
             {
                 UseGpu = options.UseGpu.AsByte(),

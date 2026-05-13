@@ -93,7 +93,7 @@ public class WhisperProcessorBuilder
     /// Configures the processor to use VAD (Voice Activity Detection) with the specified VAD model.
     /// </summary>
     /// <param name="vadModelPath">Path to the VAD model file.</param>
-    /// <returns>The same builder instance.</returns>
+    /// <returns>An instance to the same builder.</returns>
     /// <exception cref="ArgumentException">Thrown when the VAD model path is null or empty.</exception>
 
     public WhisperProcessorBuilder WithVad(string vadModelPath)
@@ -107,42 +107,69 @@ public class WhisperProcessorBuilder
         whisperProcessorOptions.VadModelPath = vadModelPath;
         return this;
     }
+    /// <summary>
+    /// Configures the probability threshold for voice activity detection.
+    /// Speech segments with a probability above this threshold are considered active speech.
+    /// </summary>
+    /// <param name="vadThreshold">The probability threshold for speech detection. Typical values range from 0.3 to 0.9.</param>
+    /// <returns>An instance to the same builder.</returns>
     public WhisperProcessorBuilder WithVadThreshold(float vadThreshold)
     {
         whisperProcessorOptions.VadThreshold = vadThreshold;
         return this;
     }
+    /// <summary>
+    /// Configures the minimum duration of active speech required before it is recognized as a valid speech segment.
+    /// </summary>
+    /// <param name="vadMinSpeechDurationMs">The minimum speech duration in milliseconds.</param>
+    /// <returns>An instance to the same builder.</returns>
     public WhisperProcessorBuilder WithVadMinSpeechDurationMs(int vadMinSpeechDurationMs)
     {
         whisperProcessorOptions.VadMinSpeechDurationMs = vadMinSpeechDurationMs;
         return this;
     }
+    /// <summary>
+    /// Configures the minimum duration of silence required to mark the end of a speech segment.
+    /// </summary>
+    /// <param name="vadMinSilenceDurationMs">The minimum silence duration in milliseconds.</param>
+    /// <returns>An instance to the same builder.</returns>
     public WhisperProcessorBuilder WithVadMinSilenceDurationMs(int vadMinSilenceDurationMs)
     {
         whisperProcessorOptions.VadMinSilenceDurationMs = vadMinSilenceDurationMs;
         return this;
     }
+    /// <summary>
+    /// Configures the maximum duration of a single speech segment before it is forcibly split.
+    /// </summary>
+    /// <param name="vadMaxSpeechDurationS">The maximum speech duration in seconds.</param>
+    /// <returns>An instance to the same builder.</returns>
     public WhisperProcessorBuilder WithVadMaxSpeechDurationS(float vadMaxSpeechDurationS)
     {
         whisperProcessorOptions.VadMaxSpeechDurationS = vadMaxSpeechDurationS;
         return this;
     }
+    /// <summary>
+    /// Configures the amount of padding added to the beginning and end of each detected speech segment.
+    /// This helps prevent cutting off speech that may occur just before or after the detected boundaries.
+    /// </summary>
+    /// <param name="vadSpeechPadMs">The speech padding duration in milliseconds.</param>
+    /// <returns>An instance to the same builder.</returns>
     public WhisperProcessorBuilder WithVadSpeechPadMs(int vadSpeechPadMs)
     {
         whisperProcessorOptions.VadSpeechPadMs = vadSpeechPadMs;
         return this;
     }
+    /// <summary>
+    /// Configures the overlap ratio between consecutive audio frames processed by the VAD model.
+    /// A higher overlap provides more precise boundary detection at the cost of increased processing.
+    /// </summary>
+    /// <param name="vadSamplesOverlap">The overlap ratio between frames, typically between 0.0 and 1.0.</param>
+    /// <returns>An instance to the same builder.</returns>
     public WhisperProcessorBuilder WithVadSamplesOverlap(float vadSamplesOverlap)
     {
         whisperProcessorOptions.VadSamplesOverlap = vadSamplesOverlap;
         return this;
     }
-    // public WhisperProcessorBuilder WithVadUseGpu(bool vadUseGpu = true)
-    // {
-    //     whisperProcessorOptions.UseGpu = vadUseGpu;
-    //     return this;
-    // }
-
 
     /// <summary>
     /// Configures the processor to not use past transformation (if any) as the initial prompt for a newer processing.

@@ -87,6 +87,7 @@ public class LanguageDetectionTests
             languagePtrs = languages.Select(MarshalUtils.GetStringHGlobalPtr).ToArray();
 
             Whisper_Init_From_File_With_Params_No_State = (_, _) => IntPtr.Zero;
+            Whisper_Init_From_File_With_Params = (_, _) => IntPtr.Zero;
             Whisper_Init_From_Buffer_With_Params_No_State = (_, _, _) => IntPtr.Zero;
             Whisper_Free = _ => { };
             Whisper_Free_Params = ptr => Marshal.FreeHGlobal(ptr);
@@ -97,6 +98,7 @@ public class LanguageDetectionTests
                 Marshal.StructureToPtr(param, ptr, false);
                 return ptr;
             };
+            Whisper_Full = (_, _, _, _) => 0;
             Whisper_Full_With_State = (_, _, _, _, _) => 0;
             Whisper_Full_N_Segments_From_State = _ => 0;
             Whisper_Full_Get_Segment_T0_From_State = (_, _) => 0;
@@ -137,10 +139,12 @@ public class LanguageDetectionTests
         }
 
         public INativeWhisper.whisper_init_from_file_with_params_no_state Whisper_Init_From_File_With_Params_No_State { get; }
+        public INativeWhisper.whisper_init_from_file_with_params Whisper_Init_From_File_With_Params { get; }
         public INativeWhisper.whisper_init_from_buffer_with_params_no_state Whisper_Init_From_Buffer_With_Params_No_State { get; }
         public INativeWhisper.whisper_free Whisper_Free { get; }
         public INativeWhisper.whisper_free_params Whisper_Free_Params { get; }
         public INativeWhisper.whisper_full_default_params_by_ref Whisper_Full_Default_Params_By_Ref { get; }
+        public INativeWhisper.whisper_full Whisper_Full { get; }
         public INativeWhisper.whisper_full_with_state Whisper_Full_With_State { get; }
         public INativeWhisper.whisper_full_n_segments_from_state Whisper_Full_N_Segments_From_State { get; }
         public INativeWhisper.whisper_full_get_segment_t0_from_state Whisper_Full_Get_Segment_T0_From_State { get; }
